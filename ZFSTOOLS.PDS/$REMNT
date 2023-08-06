@@ -1,0 +1,31 @@
+ZFSRMNT is an ISPF dialog to simplify changing the mount attributes of a
+mounted zFS from RO to RW and vice versa using the UNMOUNT command with
+the REMOUNT option - it's a toggle.
+
+This is an alternative to ISPF 3.17 with no need to enter the su command
+to gain authorization.
+
+Dependencies:  1. User must be able to get SuperUser uid:0
+                  to use the UNMOUNT command
+                  - See Facility Class BPX.SUPERUSER
+               2. Repeat Find (RFIND) requires that a
+                  Command table entry be defined in the
+                  site/user/ISPCMDS table thus:
+                  Command: RFIND
+                  Trunc:   0
+                  Desc:    user repeat find
+                  Action:  &USRRFIND
+
+Available Commands:
+
+Available Primary Commands:
+Find string             string within ZFS dataset name or mount point
+Refresh                 refresh the list of mounted ZFS filesystems
+SORT option             M mount point
+                        F by filesystem
+                        R by mount type
+
+Abbreviations: Find and REFresh
+
+Selection:
+S                        Select to toggle the mount attributes
