@@ -1,0 +1,31 @@
+)Attr Default(%+_)
+   ! type( input) intens(high) caps(on ) just(left ) hilite(uscore)
+     color(green)
+   ~ type(text) intens(high) color(turq)  hilite(reverse)
+)Body  Expand(\\)
+%-\-\-~zFS Allocation%-\-\-
+%Command ===>_zcmd
+%
++ zFS Dataset:!zfsdsn                                        +
++
++ Space Allocation:
++   Unit:     !z+       Cyl or MB
++   Primary:  !palc +   Primary Space
++   Secondary:!salc +   Secondary Space
++   Dataclas: !dcls    +Dataclas
++   Mgmtclas: !mcls    +Mgmtclas
++   Storclas: !scls    +Storclas
++   Volser:   !zfsvol+  Volser
++
+)Init
+ .cursor = zfsdsn
+ .zvars = '(atype)'
+)Proc
+  ver (&zfsdsn,nb,dsnameq)
+  ver (&atype,nb,list,C,M)
+  ver (&palc,nb,num)
+  ver (&salc,nb,num)
+  ver (&dcls,dsname)
+  ver (&mcls,dsname)
+  ver (&scls,dsname)
+)End

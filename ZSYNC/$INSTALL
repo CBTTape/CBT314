@@ -1,0 +1,6 @@
+To install, copy the ZSYNC member into a library in your SYSEXEC,
+or SYSPROC allocation.
+
+The ZSYNC member is the full ZSYNC application. All ISPF panels,
+messages, and external exec's, are included inline and dynamically
+loaded using the loadispf subroutine and then libdef'd or altlib'd.

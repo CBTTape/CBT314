@@ -1,0 +1,13 @@
+)ATTR DEFAULT(%+_)
+   % TYPE(TEXT)   INTENS(HIGH) COLOR(WHITE) SKIP(ON)
+   + TYPE(TEXT)   INTENS(LOW)  COLOR(GREEN) SKIP(ON)
+   ~ type(text) intens(high) color(green) hilite(reverse)
+)Body  Expand(\\)
+%-\-\-~z/OS Syslog Display%-\-\-
+%Command ==>_ZCMD
++
++Select from one of the z/OS Syslog file to Browse or View.
++
+)INIT
+)PROC
+)END

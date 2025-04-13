@@ -1,0 +1,87 @@
+/* --------------------  rexx procedure  -------------------- *
+ * Name:      ZOSLOG                                          *
+ *                                                            *
+ * Function:  Display a list of all z/OS syslog files and     *
+ *            allow the user to select one to Browse or View  *
+ *                                                            *
+ * Syntax:    %zoslog plex                                    *
+ *                                                            *
+ *            Where plex is the qualifier to limit the        *
+ *            datasets to a single sysplex                    *
+ *                                                            *
+ * Customization required for the hlq of the syslog           *
+ * log files. And for the date of the syslog dataset (ldate)  *
+ *                                                            *
+ * Author:    Lionel B. Dyck                                  *
+ *                                                            *
+ * History:                                                   *
+ *            05/24/16 - Creation                             *
+ *                                                            *
+ * ---------------------------------------------------------- */
+ parse arg option
+
+/* ----------------------------------------------------- *
+ * *custom*                                              *
+ *                                                       *
+ * Define defaults                                       *
+ *                                                       *
+ * Update the loghlq variable for the hlq for the syslog *
+ * datasets.                                             *
+ * ----------------------------------------------------- */
+ parse value '' with null
+ if option = null
+    then  loghlq = 'excprd.aus*.log.j*'
+    else loghlq = 'excprd.'option'.log.j*'
+
+/* --------------------------------- *
+ * display the selection panel/table *
+ * --------------------------------- */
+ Address ISPExec
+     call build_table
+     do forever
+     lsel = null
+    "TBDispl zoslog Panel(zoslog)"
+    if rc > 4 then do
+       'TBEnd zoslog'
+       exit 0
+       end
+    if lsel /= null then do
+       if translate(lsel) = 'B' then logview = 'Browse'
+       if translate(lsel) = 'V' then logview = 'View'
+       lopt = '*'left(lsel,1)'*'
+       lsel = null
+       'tbput zoslog'
+       lopt = null
+       logview "dataset('"dsn"')"
+       end
+    end
+
+/* ----------------------------------- *
+ * build the table of syslog filenames *
+ * ----------------------------------- */
+Build_Table:
+  lsel = null
+  'tbcreate zoslog names(lsel lopt ldate lfile lvol)'
+  "Lmdinit Listid(LMD) Level("loghlq")"
+  do forever
+     "Lmdlist Listid("lmd") Stats(YES) Dataset(dsn) Option(LIST)"
+     if rc > 0 then do
+        "Lmdfree listid("lmd")"
+        'TBSort zoslog fields(ldate,c,d)'
+        'TBTop zoslog'
+        return
+        end
+     lfile = dsn
+    /* ---------------------------------------------- *
+     * *custom*                                       *
+     *                                                *
+     * Update the ldate to have a valid date based on *
+     * the format of the syslog dataset name.         *
+     * ---------------------------------------------- */
+     ldate = translate(dsn,' ','.')
+     ldate = right(word(ldate,words(ldate)),5)
+     ldate = date('o',ldate,'j')
+     lvol = zdlvol
+     'TBAdd zoslog'
+  end
+ return

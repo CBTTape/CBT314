@@ -1,0 +1,67 @@
+)Attr Default(%+_)
+   $ type( input) intens(high) caps(on ) just(left )
+   @ type(output) intens(high) caps(on ) just(left )
+   ` type(text) intens(high) color(red)
+   ! type(text) intens(high) color(yellow)
+   ~ type(text) intens(high) color(turq  ) hilite(reverse)
+)Body  Expand(\\)
+%-\-\-~zFS Tools%-\-\-
+%Option ===>_zcmd
+%
+ % 1`Backup   +Backup a zFS (Unload for backup purposes)
+ % 2`Restore  +Restore a zFS from an Unload dataset
+ % 3`Alloc+   +Allocate a zFS and Format it
+ % 4`Rename   +Rename a zFS
+ % 5`Mount    +Mount a zFS to a mount point!*
+ % 6`UnMount  +UnMount a zFS from a mount point
+ % 7`zfsadm   +zfsadm
+ % 8`Mount FS +IBM's Mount by File System
+ % 9`Mount MP +IBM's Mount by Mount Point
+ %10`zFSUse   +zFS Usage
+ %11`zLSOF    +List users of File Systems
+ %12`zFSCopy  +Generate ADRDSSU JCL to Copy a zFS
+ %13`zFSSizer +Size a zFS dataset
+ %14`Remount  +Remount a mounted zFS changing from RO to RW or back!*
+ %15`AutoMount+Report/View all AutoMounted Filesystems
+ +
+ ! *`Indicates SuperUser Authority may be required for some or all
+    `part of the selection
+)Init
+*rexx(* zosrl zos390rl zedsmsg zedlmsg)
+ zosrl = space(zos390rl)
+  address syscall 'geteuid'   /* get current euid */
+  euid = retval
+  address syscall 'seteuid 0' /* try to set uid 0 */
+  zedsmsg = ''
+  if retval /= 0 then do
+     zedsmsg = 'Warning.'
+     zedlmsg = 'Unable to get UID of 0, meaning you do not have' ,
+         'access to BPX.SUPERUSER Facility class and will' ,
+         'not be able to issue the Remount command.'
+     end
+  else do
+       address syscall 'seteuid' euid  /* reset back */
+       end
+*endrexx
+ if (&ZEDSMSG NE &Z)
+    .msg = isrz001
+)Proc
+&ZSEL = TRANS (TRUNC (&ZCMD,'.')
+         1,'CMD(%zfsback)'
+         2,'CMD(%zfsrest)'
+         3,'CMD(%zfsalloc)'
+         4,'CMD(%zfsrenam)'
+         5,'cmd(%zfsmnt)'
+         6,'CMD(%zfsumnt)'
+         7,'Panel(zfsadm)'
+         8,'cmd(%zfsibm fs1)'
+         9,'cmd(%zfsibm fs2)'
+        10,'panel(zfsuse)'
+        11,'cmd(%zfszlsof)'
+        12,'cmd(%zfscopy)'
+        13,'cmd(%zfssizer)'
+        14,'cmd(%zfsrmnt)'
+        15,'cmd(%zfsamnt)'
+         ' ',' '
+         *,'?' )
+)End

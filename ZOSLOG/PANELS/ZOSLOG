@@ -1,0 +1,29 @@
+)Attr Default(%+_)
+   $ type( input) intens(high) caps(on ) just(left ) Pad('_')
+   @ type( input) intens(high) caps(off) just(left )
+   ¬ type(output) intens(low) color(green)
+   ` type(text) intens(high) color(red)
+   ! type(text) intens(high) color(yellow)
+   ~ type(text) intens(high) color(green) hilite(reverse)
+)Body  Expand(\\)
+%-\-\-~z/OS Syslog Display%-\-\-
+%Option ===>_zcmd                                              %Scroll ===>_amt
+%                                                                              +
+ +Select a syslog file to Browse or View
+ +
+`Sel       Date      Volser Filename
+
+)Model
+$z+  ¬z   ¬z        ¬z     ¬z
+)Init
+ .zvars = '(lsel lopt ldate lvol lfile)'
+ .cursor = zcmd
+ .help = zOSLOGH
+ &amt = csr
+)Proc
+ver (&lsel,nb,list,B,V)
+if (&ztdsels = 0000)
+   &zedsmsg = 'Error'
+   &zedlmsg = 'Select a single syslog file to proceed.'
+   ver (&lsel,nb,list,B,V,MSG=ISRZ001)
+)End
